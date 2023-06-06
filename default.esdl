@@ -9,12 +9,8 @@ module auth {
       default := std::datetime_of_transaction();
     }
     image: str;
-    multi sessions: Session {
-      on target delete delete source;
-    }
-    multi accounts: Account {
-      on target delete delete source;
-    }
+    link sessions := .<user[is Session];
+    link accounts := .<user[is Account];
   }
 
   type Session {
@@ -24,11 +20,15 @@ module auth {
     required expires: datetime {
       default := std::datetime_of_transaction();
     }
-    required user: User
+    required user: User {
+      on target delete delete source;
+    }
   }
 
   type Account {
-    required user: User;
+    required user: User {
+      on target delete delete source;
+    }
     required type: AccountType;
     required provider: str;
     required providerAccountId: str;
